@@ -30,7 +30,6 @@ namespace Clipboard.Controllers
             public Action<HotKey> Action { get; private set; }
             public int Id { get; set; }
 
-            // ******************************************************************
             public HotKey(Key k, KeyModifier keyModifiers, Action<HotKey> action, bool register = true)
             {
                 Key = k;
@@ -42,7 +41,6 @@ namespace Clipboard.Controllers
                 }
             }
 
-            // ******************************************************************
             public bool Register()
             {
                 int virtualKeyCode = KeyInterop.VirtualKeyFromKey(Key);
@@ -60,7 +58,6 @@ namespace Clipboard.Controllers
                 return result;
             }
 
-            // ******************************************************************
             public void Unregister()
             {
                 HotKey hotKey;
@@ -69,8 +66,7 @@ namespace Clipboard.Controllers
                     UnregisterHotKey(IntPtr.Zero, Id);
                 }
             }
-
-            // ******************************************************************
+            
             private static void ComponentDispatcherThreadFilterMessage(ref MSG msg, ref bool handled)
             {
                 if (!handled)

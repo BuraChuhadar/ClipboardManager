@@ -1,6 +1,8 @@
 ﻿using Clipboard.Controllers;
+using Clipboard.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,24 +23,43 @@ namespace Clipboard.Views
     public partial class ClipboardView : Window
     {
         System.Windows.Forms.NotifyIcon clipboardIcon = new System.Windows.Forms.NotifyIcon();
+        ClipboardController clipboardController;
+
         public ClipboardView()
         {
             clipboardIcon.Visible = true;
             clipboardIcon.Icon = new System.Drawing.Icon(@"Resources\Icon1.ico");
-            clipboardIcon.ShowBalloonTip(5000, "Title", "Text", System.Windows.Forms.ToolTipIcon.Info);
             InitializeComponent();
-            
+           
+
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             this.Hide();
-            var hotkeyController = new HotkeyController.HotKey(Key.V, HotkeyController.KeyModifier.Shift | HotkeyController.KeyModifier.Ctrl, OnHotKeyHandler);
+            new HotkeyController.HotKey(Key.V, HotkeyController.KeyModifier.Shift | HotkeyController.KeyModifier.Ctrl, OnHotKeyPaste);
+            clipboardController = new ClipboardController(this);
+            clipboardController.ClipboardChanged += ClipboardController_ClipboardChanged;
         }
 
-        private void OnHotKeyHandler(HotkeyController.HotKey obj)
+        private void ClipboardController_ClipboardChanged(object sender, EventArgs e)
         {
-            this.Show();
+            if(System.Windows.Forms.Clipboard.ContainsText())
+            {
+
+            }
+            Debug.WriteLine(System.Windows.Forms.Clipboard.GetText());
         }
+
+        private void OnHotKeyPaste(HotkeyController.HotKey obj)
+        {
+            //clipboardController.ClipboardChanged -= ClipboardController_ClipboardChanged;
+            System.Windows.Forms.Clipboard.SetText("Test");
+
+            clipboardController?.Paste();
+            //clipboardController.ClipboardChanged += ClipboardController_ClipboardChanged;
+            // this.Show();
+        }
+
     }
 }
