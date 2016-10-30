@@ -38,8 +38,14 @@ namespace Clipboard.Controllers
             [DllImport("User32.dll")]
             public static extern int SendMessage(IntPtr hWnd, int uMsg, int wParam, string lParam);
 
+            [DllImport("user32.dll")]
+            public static extern IntPtr PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
             [DllImport("user32.dll", SetLastError = true)]
             public static extern bool GetGUIThreadInfo(uint hTreadID, ref GUITHREADINFO lpgui);
+
+            [DllImport("user32.dll")]
+            public static extern IntPtr GetForegroundWindow();
 
             [StructLayout(LayoutKind.Sequential)]
             public struct GUITHREADINFO
@@ -97,6 +103,7 @@ namespace Clipboard.Controllers
             info.cbSize = Marshal.SizeOf(info);
             if (!NativeMethods.GetGUIThreadInfo(0, ref info))
                 throw new Win32Exception();
+            
             return info.hwndFocus;
         }
 
@@ -104,8 +111,8 @@ namespace Clipboard.Controllers
         {
             IntPtr hWnd = GetFocusedHandle();
             
-            //NativeMethods.PostMessage(hWnd, NativeMethods.WM_PASTE, IntPtr.Zero, IntPtr.Zero);
-            NativeMethods.SendMessage(hWnd, 0x000C, 0, "Test");
+            NativeMethods.PostMessage(hWnd, NativeMethods.WM_PASTE, IntPtr.Zero, IntPtr.Zero);
+            //NativeMethods.SendMessage(hWnd, 0x000C, 0, "Test");
 
         }
 
