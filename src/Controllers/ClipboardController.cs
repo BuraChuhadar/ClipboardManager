@@ -7,7 +7,11 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
+using System.Windows.Input;
 using System.Windows.Interop;
+using WindowsInput;
+using WindowsInput.Native;
 
 namespace Clipboard.Controllers
 {
@@ -46,6 +50,27 @@ namespace Clipboard.Controllers
 
             [DllImport("user32.dll")]
             public static extern IntPtr GetForegroundWindow();
+
+            [DllImport("USER32.DLL")]
+            public static extern bool SetForegroundWindow(IntPtr hWnd);
+
+            [DllImport("user32.dll")]
+            public static extern int SetActiveWindow(IntPtr hwnd);
+
+            public struct INPUT
+            {
+                public int type;
+                public KEYBDINPUT u;
+            }
+            [StructLayout(LayoutKind.Sequential)]
+            public struct KEYBDINPUT
+            {
+                public ushort wVk;
+                public ushort wScan;
+                public uint dwFlags;
+                public uint time;
+                public IntPtr dwExtraInfo;
+            }
 
             [StructLayout(LayoutKind.Sequential)]
             public struct GUITHREADINFO
@@ -109,10 +134,10 @@ namespace Clipboard.Controllers
 
         public void Paste()
         {
-            IntPtr hWnd = GetFocusedHandle();
+        //    IntPtr hWnd = GetFocusedHandle();
+        //    NativeMethods.SetActiveWindow(hWnd);
+            new InputSimulator().Keyboard.ModifiedKeyStroke(VirtualKeyCode.CONTROL, VirtualKeyCode.VK_V);
             
-            NativeMethods.PostMessage(hWnd, NativeMethods.WM_PASTE, IntPtr.Zero, IntPtr.Zero);
-            //NativeMethods.SendMessage(hWnd, 0x000C, 0, "Test");
 
         }
 
@@ -129,7 +154,8 @@ namespace Clipboard.Controllers
 
         private void OnClipboardChanged()
         {
-            ClipboardChanged?.Invoke(this, EventArgs.Empty);
+           ClipboardChanged?.Invoke(this, EventArgs.Empty);
+            
         }
 
         private static readonly IntPtr WndProcSuccess = IntPtr.Zero;

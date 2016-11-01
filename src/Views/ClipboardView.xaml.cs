@@ -53,12 +53,13 @@ namespace Clipboard.Views
 
         private void OnHotKeyPaste(HotkeyController.HotKey obj)
         {
-            //clipboardController.ClipboardChanged -= ClipboardController_ClipboardChanged;
+            clipboardController.ClipboardChanged -= ClipboardController_ClipboardChanged;
+            this.Show();
             System.Windows.Forms.Clipboard.SetText("Test");
-
+            this.Hide();
             clipboardController?.Paste();
-            //clipboardController.ClipboardChanged += ClipboardController_ClipboardChanged;
-            // this.Show();
+            clipboardController.ClipboardChanged += ClipboardController_ClipboardChanged;
+
         }
 
     }
