@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Clipboard.Views"
         mc:Ignorable="d"
-        Title="Clipboard" Height="303.138" Width="210.879" WindowStyle="None" Loaded="Window_Loaded" Visibility="Visible" WindowStartupLocation="CenterOwner" ShowInTaskbar="False">
-    <Grid Visibility="Hidden">
-
-    </Grid>
+        Title="Clipboard" Height="303.138" Width="210.879" WindowStyle="None" Loaded="Window_Loaded" Visibility="Visible" WindowStartupLocation="CenterOwner" ShowInTaskbar="False" ResizeMode="NoResize">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel x:Name="ClipboardPanel" />
+    </ScrollViewer>
 </Window>
