@@ -62,7 +62,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Controllers\ClipboardController.cs" />
-    <Compile Include="Controllers\ClipboardViewController.cs" />
     <Compile Include="Controllers\HotkeyController.cs" />
     <Compile Include="Models\ClipboardStringData.cs" />
     <Compile Include="Views\App.xaml.cs">
