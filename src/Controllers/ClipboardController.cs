@@ -38,66 +38,6 @@ namespace Clipboard.Controllers
             [DllImport("user32.dll", SetLastError = true)]
             [return: MarshalAs(UnmanagedType.Bool)]
             public static extern bool RemoveClipboardFormatListener(IntPtr hwnd);
-
-            [DllImport("User32.dll")]
-            public static extern int SendMessage(IntPtr hWnd, int uMsg, int wParam, string lParam);
-
-            [DllImport("user32.dll")]
-            public static extern IntPtr PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
-
-            [DllImport("user32.dll", SetLastError = true)]
-            public static extern bool GetGUIThreadInfo(uint hTreadID, ref GUITHREADINFO lpgui);
-
-            [DllImport("user32.dll")]
-            public static extern IntPtr GetForegroundWindow();
-
-            [DllImport("USER32.DLL")]
-            public static extern bool SetForegroundWindow(IntPtr hWnd);
-
-            [DllImport("user32.dll")]
-            public static extern int SetActiveWindow(IntPtr hwnd);
-
-            public struct INPUT
-            {
-                public int type;
-                public KEYBDINPUT u;
-            }
-            [StructLayout(LayoutKind.Sequential)]
-            public struct KEYBDINPUT
-            {
-                public ushort wVk;
-                public ushort wScan;
-                public uint dwFlags;
-                public uint time;
-                public IntPtr dwExtraInfo;
-            }
-
-            [StructLayout(LayoutKind.Sequential)]
-            public struct GUITHREADINFO
-            {
-                public int cbSize;
-                public int flags;
-                public IntPtr hwndActive;
-                public IntPtr hwndFocus;
-                public IntPtr hwndCapture;
-                public IntPtr hwndMenuOwner;
-                public IntPtr hwndMoveSize;
-                public IntPtr hwndCaret;
-                public RECT rectCaret;
-            }
-
-            [StructLayout(LayoutKind.Sequential)]
-            public struct RECT
-            {
-                public int iLeft;
-                public int iTop;
-                public int iRight;
-                public int iBottom;
-            }
-
-            public const uint WM_PASTE = 0x0302;
-
-
         }
 
         public ClipboardController(Window windowSource)
@@ -113,35 +53,17 @@ namespace Clipboard.Controllers
 
             source.AddHook(WndProc);
 
-            // get window handle for interop
-            IntPtr windowHandle = new WindowInteropHelper(_windowSource).Handle;
-
-            // register for clipboard events
-            NativeMethods.AddClipboardFormatListener(windowHandle);
+            RegisterListenter();
         }
 
         public event EventHandler ClipboardChanged;
 
-        IntPtr GetFocusedHandle()
-        {
-            var info = new NativeMethods.GUITHREADINFO();
-            info.cbSize = Marshal.SizeOf(info);
-            if (!NativeMethods.GetGUIThreadInfo(0, ref info))
-                throw new Win32Exception();
-            
-            return info.hwndFocus;
-        }
-
         public void Paste()
         {
-        //    IntPtr hWnd = GetFocusedHandle();
-        //    NativeMethods.SetActiveWindow(hWnd);
             new InputSimulator().Keyboard.ModifiedKeyStroke(VirtualKeyCode.CONTROL, VirtualKeyCode.VK_V);
-            
-
         }
 
-        private void UnRegisterListener()
+        public void UnRegisterListener()
         {
             if (_windowSource != null)
             {
@@ -149,7 +71,18 @@ namespace Clipboard.Controllers
                 IntPtr windowHandle = new WindowInteropHelper(_windowSource).Handle;
                 NativeMethods.RemoveClipboardFormatListener(windowHandle);     // Remove our window from the clipboard's format listener list.
             }
-            
+        }
+
+        public void RegisterListenter()
+        {
+            if (_windowSource != null)
+            {
+                // get window handle for interop
+                IntPtr windowHandle = new WindowInteropHelper(_windowSource).Handle;
+
+                // register for clipboard events
+                NativeMethods.AddClipboardFormatListener(windowHandle);
+            }
         }
 
         private void OnClipboardChanged()
