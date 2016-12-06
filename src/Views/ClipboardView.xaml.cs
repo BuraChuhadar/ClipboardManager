@@ -29,6 +29,7 @@ namespace Clipboard.Views
         {
             clipboardIcon.Visible = true;
             clipboardIcon.Icon = new System.Drawing.Icon(@"Resources\Icon1.ico");
+            clipboardIcon.ContextMenu = new ContextMenuController().ContextMenu;
             InitializeComponent();
            
 
@@ -65,6 +66,7 @@ namespace Clipboard.Views
                     clipboardTextblock.MouseEnter += ClipboardTextBlock_MouseEnter;
                     clipboardTextblock.MouseLeave += ClipboardTextBlock_MouseLeave;
                     this.ClipboardPanel.Children.Add(clipboardTextblock);
+                    this.ScrollViewer.ScrollToEnd();
                 }   
             }
         }
@@ -108,8 +110,16 @@ namespace Clipboard.Views
         {
             var transform = PresentationSource.FromVisual(this).CompositionTarget.TransformFromDevice;
             var mouse = transform.Transform(GetMousePosition());
+            var resolution = System.Windows.Forms.Screen.PrimaryScreen.Bounds;
+            if (mouse.Y >= resolution.Height/2)
+            {
+                Top = mouse.Y - this.Height + 1;
+            }
+            else
+            {
+                Top = mouse.Y + 1;
+            }
             Left = mouse.X + 1;
-            Top = mouse.Y + 1;
         }
 
         public System.Windows.Point GetMousePosition()
