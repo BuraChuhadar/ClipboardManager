@@ -22,5 +22,17 @@ namespace Clipboard.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool LoadOnStartup {
+            get {
+                return ((bool)(this["LoadOnStartup"]));
+            }
+            set {
+                this["LoadOnStartup"] = value;
+            }
+        }
     }
 }
