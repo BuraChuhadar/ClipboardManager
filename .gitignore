@@ -10,5 +10,3 @@ artifacts/
 *DS_Store
 *.sln.ide
 .vs/
-production/*
-!production/.gitkeep
