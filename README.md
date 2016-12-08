@@ -2,3 +2,6 @@
 
 
 Clipboard Manager is a nice clipboard manager that is written in WPF. It uses Windows API in the background for certain operations. It supports all recent Windows platforms.
+
+
+You can download the application from [here](https://cdn.rawgit.com/BugraC/ClipboardManager/master/production/publish.htm).
