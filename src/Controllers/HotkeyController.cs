@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Interop;
 
-namespace Clipboard.Controllers
+namespace ClipboardManager.Controllers
 {
     class HotkeyController
     {

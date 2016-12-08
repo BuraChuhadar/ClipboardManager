@@ -1,4 +1,4 @@
-﻿using Clipboard.Models;
+﻿using ClipboardManager.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,7 +13,7 @@ using System.Windows.Interop;
 using WindowsInput;
 using WindowsInput.Native;
 
-namespace Clipboard.Controllers
+namespace ClipboardManager.Controllers
 {
     public class ClipboardController: IDisposable
     {
