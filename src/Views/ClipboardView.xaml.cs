@@ -1,5 +1,5 @@
-﻿using Clipboard.Controllers;
-using Clipboard.Models;
+﻿using ClipboardManager.Controllers;
+using ClipboardManager.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,7 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Clipboard.Views
+namespace ClipboardManager.Views
 {
     /// <summary>
     /// Interaction logic for Clipboard.xaml

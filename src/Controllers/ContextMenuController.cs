@@ -1,4 +1,4 @@
-﻿using Clipboard.Views;
+﻿using ClipboardManager.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Clipboard.Controllers
+namespace ClipboardManager.Controllers
 {
     public class ContextMenuController
     {
@@ -20,7 +20,14 @@ namespace Clipboard.Controllers
         public void BuildContextMenu()
         {
             ContextMenu.MenuItems.Add("&Options");
+            ContextMenu.MenuItems.Add("&Close");
             ContextMenu.MenuItems[0].Click += ContextMenuController_Click;
+            ContextMenu.MenuItems[1].Click += ContextMenuController_Click1;
+        }
+
+        private void ContextMenuController_Click1(object sender, EventArgs e)
+        {
+            App.Current.Shutdown();
         }
 
         private void ContextMenuController_Click(object sender, EventArgs e)

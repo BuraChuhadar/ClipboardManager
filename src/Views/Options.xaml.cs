@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Microsoft.Win32;
 
-namespace Clipboard.Views
+namespace ClipboardManager.Views
 {
     /// <summary>
     /// Interaction logic for Options.xaml
