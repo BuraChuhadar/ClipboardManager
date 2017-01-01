@@ -1,5 +1,4 @@
-﻿using ClipboardManager.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -110,7 +109,6 @@ namespace ClipboardManager.Controllers
         // A derived class should not be able to override this method.
         public void Dispose()
         {
-            System.Diagnostics.Debug.WriteLine("Disposing");
             Dispose(true);
             // This object will be cleaned up by the Dispose method.
             // Therefore, you should call GC.SupressFinalize to
