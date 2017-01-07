@@ -8,7 +8,7 @@
         <beforeApplicationStartup />
       </update>
     </subscription>
-    <deploymentProvider codebase="https://cdn.rawgit.com/BugraC/ClipboardManager/master/production/Clipboard%20Manager.application" />
+    <deploymentProvider codebase="https://rawgit.com/BugraC/ClipboardManager/master/production/Clipboard%20Manager.application" />
   </deployment>
   <compatibleFrameworks xmlns="urn:schemas-microsoft-com:clickonce.v2">
     <framework targetVersion="4.5.2" profile="Full" supportedRuntime="4.0.30319" />
@@ -21,7 +21,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>PaOXl+qnkvnYep21cCmdjr7war5IBwHGG1qbCaymBx8=</dsig:DigestValue>
+        <dsig:DigestValue>oBcc9E4FBQrX+XKKE150xbb533b9XnY7Af2g3N8NN9k=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
