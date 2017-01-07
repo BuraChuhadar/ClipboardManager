@@ -1,5 +1,4 @@
 ﻿using ClipboardManager.Controllers;
-using ClipboardManager.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -56,18 +56,62 @@ namespace ClipboardManager.Views
                 var clipboardValue = System.Windows.Forms.Clipboard.GetText();
                 if(!string.IsNullOrEmpty(clipboardValue.Trim()))
                 {
+                    var clipboardItemsGrid = new Grid();
+                    clipboardItemsGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(0.9, GridUnitType.Star) });
+                    clipboardItemsGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(0.1, GridUnitType.Star) });
                     var clipboardTextblock = new TextBlock();
                     clipboardTextblock.ToolTip = new ToolTip().Content = clipboardValue.Length > 100 ? $@"{clipboardValue.Substring(0, 100)} ..." : clipboardValue;
                     clipboardTextblock.TextTrimming = TextTrimming.CharacterEllipsis;
                     clipboardTextblock.TextWrapping = TextWrapping.NoWrap;
                     clipboardTextblock.Height = 20;
                     clipboardTextblock.Text = clipboardValue;
+                    Grid.SetColumn(clipboardTextblock, 0);
                     clipboardTextblock.MouseUp += ClipboardTextBlock_MouseUp;
                     clipboardTextblock.MouseEnter += ClipboardTextBlock_MouseEnter;
                     clipboardTextblock.MouseLeave += ClipboardTextBlock_MouseLeave;
-                    this.ClipboardPanel.Children.Add(clipboardTextblock);
-                    this.ScrollViewer.ScrollToEnd();
+                    
+                    var clipboardCheckbox = new CheckBox();
+                    clipboardCheckbox.Width = this.Width * 0.10;
+                    clipboardCheckbox.Checked += ClipboardCheckbox_Checked;
+                    clipboardCheckbox.Unchecked += ClipboardCheckbox_UnChecked;
+                    clipboardItemsGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
+                    Grid.SetColumn(clipboardCheckbox, 1);
+
+                    DockPanel.SetDock(clipboardTextblock, Dock.Left);
+                    DockPanel.SetDock(clipboardCheckbox, Dock.Right);
+
+                    clipboardItemsGrid.Children.Add(clipboardTextblock);
+                    clipboardItemsGrid.Children.Add(clipboardCheckbox);
+                    this.ClipboardPanelUnPinned.Children.Add(clipboardItemsGrid);
+                    this.ScrollViewerUnPinned.ScrollToEnd();
                 }   
+            }
+        }
+
+        private void ClipboardCheckbox_Checked(object sender, RoutedEventArgs e)
+        {
+            ClipboardPanel.RowDefinitions[0].Height = new GridLength(0.2, GridUnitType.Star);
+            ClipboardPanel.RowDefinitions[1].Height = new GridLength(0.8, GridUnitType.Star);
+            var currentCheckbox = (CheckBox)(sender);
+            var currentClipboardItem = (Grid)(currentCheckbox).Parent;
+            MoveClipboardItem(currentClipboardItem,ClipboardPanelUnPinned,ClipboardPanelPinned);
+        }
+
+        private void MoveClipboardItem(Grid currentClipboardItem,StackPanel fromPanel, StackPanel toPanel)
+        {
+            fromPanel.Children.Remove(currentClipboardItem);
+            toPanel.Children.Insert(toPanel.Children.Count, currentClipboardItem);
+        }
+
+        private void ClipboardCheckbox_UnChecked(object sender, RoutedEventArgs e)
+        {
+            var currentCheckbox = (CheckBox)(sender);
+            var currentClipboardItem = (Grid)(currentCheckbox).Parent;
+            MoveClipboardItem(currentClipboardItem, ClipboardPanelPinned, ClipboardPanelUnPinned);
+            if(ClipboardPanelPinned.Children.Count == 0)
+            {
+                ClipboardPanel.RowDefinitions[0].Height = GridLength.Auto;
+                ClipboardPanel.RowDefinitions[1].Height = new GridLength(1, GridUnitType.Star);
             }
         }
 

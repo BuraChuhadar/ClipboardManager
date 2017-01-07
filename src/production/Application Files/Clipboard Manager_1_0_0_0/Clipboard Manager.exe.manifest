@@ -42,14 +42,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Clipboard Manager.exe" size="21504">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Clipboard Manager.exe" size="27648">
       <assemblyIdentity name="Clipboard Manager" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>yoNpf0lJ0NTnPjauth2xd3Y69uOwPX0y5H/vJsnPNDA=</dsig:DigestValue>
+        <dsig:DigestValue>5nt/f9tQJ83SrH3uUEXfPZHr3eLTzKW/kJmBlK/nJr4=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
