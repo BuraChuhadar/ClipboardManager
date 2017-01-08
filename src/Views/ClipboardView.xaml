@@ -6,20 +6,21 @@
         xmlns:local="clr-namespace:ClipboardManager.Views"
         mc:Ignorable="d"
         Title="Clipboard" Height="303.138" Width="210.879" WindowStyle="None" Loaded="Window_Loaded" Visibility="Visible" WindowStartupLocation="CenterOwner" ShowInTaskbar="False" ResizeMode="NoResize">
-
-    <Grid x:Name="ClipboardPanel">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"  />
-        </Grid.ColumnDefinitions>
-        <ScrollViewer x:Name="ScrollViewerPinned" VerticalScrollBarVisibility="Auto" Grid.Row="0" Grid.Column="1">
-            <StackPanel x:Name="ClipboardPanelPinned" Grid.Row="0" Grid.Column="1"/>
-        </ScrollViewer>
-        <ScrollViewer x:Name="ScrollViewerUnPinned" VerticalScrollBarVisibility="Auto" Grid.Row="1" Grid.Column="1">
-            <StackPanel x:Name="ClipboardPanelUnPinned" Grid.Row="1" Grid.Column="1"/>
-        </ScrollViewer>
-    </Grid>
+    <Border BorderBrush="Blue" BorderThickness="2">
+        <Grid x:Name="ClipboardPanel">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"  />
+            </Grid.ColumnDefinitions>
+            <ScrollViewer x:Name="ScrollViewerPinned" VerticalScrollBarVisibility="Auto" Grid.Row="0" Grid.Column="1">
+                <StackPanel x:Name="ClipboardPanelPinned" Grid.Row="0" Grid.Column="1"/>
+            </ScrollViewer>
+            <ScrollViewer x:Name="ScrollViewerUnPinned" VerticalScrollBarVisibility="Auto" Grid.Row="1" Grid.Column="1">
+                <StackPanel x:Name="ClipboardPanelUnPinned" Grid.Row="1" Grid.Column="1"/>
+            </ScrollViewer>
+        </Grid>
+    </Border>
 </Window>
