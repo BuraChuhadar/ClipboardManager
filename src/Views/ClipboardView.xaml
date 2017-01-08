@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ClipboardManager.Views"
         mc:Ignorable="d"
         Title="Clipboard" Height="303.138" Width="210.879" WindowStyle="None" Loaded="Window_Loaded" Visibility="Visible" WindowStartupLocation="CenterOwner" ShowInTaskbar="False" ResizeMode="NoResize">
-    <Border BorderBrush="Blue" BorderThickness="2">
+    <Border BorderBrush="Black" BorderThickness="1">
         <Grid x:Name="ClipboardPanel">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
