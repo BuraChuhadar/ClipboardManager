@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Microsoft.Win32;
+using Winforms = System.Windows.Forms;
 
 namespace ClipboardManager.Views
 {
@@ -27,23 +28,31 @@ namespace ClipboardManager.Views
 
         private void SetStartup(bool setStartUp)
         {
-            RegistryKey rk = Registry.CurrentUser.OpenSubKey
-                ("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+            using (var rk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true))
+            {
+                try
+                {
+                    if (setStartUp)
+                    {
+                        rk.SetValue(Winforms.Application.ProductName, Winforms.Application.ExecutablePath);
 
-            if (setStartUp)
-            {
-                rk.SetValue(this.Name, System.Reflection.Assembly.GetExecutingAssembly().Location);
-            }
-            else
-            {
-                rk.DeleteValue(this.Name, false);
+                    }
+                    else
+                    {
+                        rk.DeleteValue(Winforms.Application.ProductName, false);
+                    }
+                }
+                finally
+                {
+                    Properties.Settings.Default.LoadOnStartup = chckLoadStartup.IsChecked.Value;
+                    Properties.Settings.Default.Save();
+                }
             }
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.LoadOnStartup = chckLoadStartup.IsChecked.Value;
-            Properties.Settings.Default.Save();
+           
             SetStartup(Properties.Settings.Default.LoadOnStartup);
             this.Close();
         }
