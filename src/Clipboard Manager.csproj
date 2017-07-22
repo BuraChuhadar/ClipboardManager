@@ -160,7 +160,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\Icon1.ico">
+    <Content Include="Resources\ApplicationIcon.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

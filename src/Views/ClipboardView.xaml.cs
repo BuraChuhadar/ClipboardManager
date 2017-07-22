@@ -28,11 +28,9 @@ namespace ClipboardManager.Views
         public ClipboardView()
         {
             clipboardIcon.Visible = true;
-            clipboardIcon.Icon = new System.Drawing.Icon(@"Resources\Icon1.ico");
+            clipboardIcon.Icon = new System.Drawing.Icon(@"Resources\ApplicationIcon.ico");
             clipboardIcon.ContextMenu = new ContextMenuController().ContextMenu;
             InitializeComponent();
-           
-
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -49,6 +47,7 @@ namespace ClipboardManager.Views
             this.Hide();
         }
 
+        #region ClipboardEvents
         private void ClipboardController_ClipboardChanged(object sender, EventArgs e)
         {
             if(System.Windows.Forms.Clipboard.ContainsText())
@@ -114,6 +113,7 @@ namespace ClipboardManager.Views
                 ClipboardPanel.RowDefinitions[1].Height = new GridLength(1, GridUnitType.Star);
             }
         }
+        #endregion
 
         #region LabelActions
         private void ClipboardTextBlock_MouseLeave(object sender, MouseEventArgs e)
