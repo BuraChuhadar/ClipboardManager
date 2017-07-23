@@ -10,4 +10,4 @@ artifacts/
 *DS_Store
 *.sln.ide
 .vs/
-production/**
+src/Output/**
