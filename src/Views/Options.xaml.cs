@@ -44,7 +44,7 @@ namespace ClipboardManager.Views
                 }
                 finally
                 {
-                    Properties.Settings.Default.LoadOnStartup = chckLoadStartup.IsChecked.Value;
+                    Properties.Settings.Default.LoadOnStartup = setStartUp;
                     Properties.Settings.Default.Save();
                 }
             }
@@ -52,8 +52,7 @@ namespace ClipboardManager.Views
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
-           
-            SetStartup(Properties.Settings.Default.LoadOnStartup);
+            SetStartup(chckLoadStartup.IsChecked.Value);
             this.Close();
         }
 
