@@ -38,7 +38,6 @@ namespace ClipboardManager.Views
                 ContextMenu = new ContextMenuController().ContextMenu,
                 Visible = true
             };
-            this.Hide();
             new HotkeyController.HotKey(Key.V, HotkeyController.KeyModifier.Shift | HotkeyController.KeyModifier.Ctrl, OnHotKeyPressed);
             clipboardController = new ClipboardController(this);
             clipboardController.ClipboardChanged += ClipboardController_ClipboardChanged;
