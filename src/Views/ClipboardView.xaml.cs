@@ -13,7 +13,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using System.IO;
 
 namespace ClipboardManager.Views
 {
@@ -22,19 +22,22 @@ namespace ClipboardManager.Views
     /// </summary>
     public partial class ClipboardView : Window
     {
-        System.Windows.Forms.NotifyIcon clipboardIcon = new System.Windows.Forms.NotifyIcon();
+        
         ClipboardController clipboardController;
 
         public ClipboardView()
         {
-            clipboardIcon.Visible = true;
-            clipboardIcon.Icon = new System.Drawing.Icon(@"Resources\ApplicationIcon.ico");
-            clipboardIcon.ContextMenu = new ContextMenuController().ContextMenu;
             InitializeComponent();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            var clipboardIcon = new System.Windows.Forms.NotifyIcon()
+            {
+                Icon = new System.Drawing.Icon((Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), @"Resources\ApplicationIcon.ico"))),
+                ContextMenu = new ContextMenuController().ContextMenu,
+                Visible = true
+            };
             this.Hide();
             new HotkeyController.HotKey(Key.V, HotkeyController.KeyModifier.Shift | HotkeyController.KeyModifier.Ctrl, OnHotKeyPressed);
             clipboardController = new ClipboardController(this);

@@ -34,7 +34,7 @@ namespace ClipboardManager.Views
                 {
                     if (setStartUp)
                     {
-                        rk.SetValue(Winforms.Application.ProductName, Winforms.Application.ExecutablePath);
+                        rk.SetValue(Winforms.Application.ProductName, $@"""{Winforms.Application.ExecutablePath}""");
 
                     }
                     else
