@@ -108,6 +108,7 @@
     <Compile Include="Controllers\ClipboardController.cs" />
     <Compile Include="Controllers\ContextMenuController.cs" />
     <Compile Include="Controllers\HotkeyController.cs" />
+    <Compile Include="Controllers\Utiliies.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
