@@ -15,7 +15,7 @@ namespace ClipboardManager.Controllers
 
         public class HotKey : IDisposable
         {
-            private static Dictionary<int, HotKey> _dictHotKeyToCalBackProc;
+            private static Dictionary<int, HotKey> _dictHotKeyToCallBackProc;
 
             [DllImport("user32.dll")]
             private static extern bool RegisterHotKey(IntPtr hWnd, int id, UInt32 fsModifiers, UInt32 vlc);
@@ -57,23 +57,23 @@ namespace ClipboardManager.Controllers
                 Id = virtualKeyCode + ((int)KeyModifiers * 0x10000);
                 bool result = RegisterHotKey(IntPtr.Zero, Id, (UInt32)KeyModifiers, (UInt32)virtualKeyCode);
 
-                if (_dictHotKeyToCalBackProc == null)
+                if (_dictHotKeyToCallBackProc == null)
                 {
-                    _dictHotKeyToCalBackProc = new Dictionary<int, HotKey>();
+                    _dictHotKeyToCallBackProc = new Dictionary<int, HotKey>();
                     ComponentDispatcher.ThreadFilterMessage += new ThreadMessageEventHandler(ComponentDispatcherThreadFilterMessage);
                 }
 
-                _dictHotKeyToCalBackProc.Add(Id, this);
+                _dictHotKeyToCallBackProc.Add(Id, this);
 
                 return result;
             }
 
             public void Unregister()
             {
-                HotKey hotKey;
-                if (_dictHotKeyToCalBackProc.TryGetValue(Id, out hotKey))
+                if (_dictHotKeyToCallBackProc.TryGetValue(Id, out HotKey hotKey))
                 {
                     UnregisterHotKey(IntPtr.Zero, Id);
+                    _dictHotKeyToCallBackProc.Remove(Id);
                 }
             }
             
@@ -85,7 +85,7 @@ namespace ClipboardManager.Controllers
                     {
                         HotKey hotKey;
 
-                        if (_dictHotKeyToCalBackProc.TryGetValue((int)msg.wParam, out hotKey))
+                        if (_dictHotKeyToCallBackProc.TryGetValue((int)msg.wParam, out hotKey))
                         {
                             if (hotKey.Action != null)
                             {
