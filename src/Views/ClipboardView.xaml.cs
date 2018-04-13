@@ -38,7 +38,7 @@ namespace ClipboardManager.Views
                 ContextMenu = new ContextMenuController().ContextMenu,
                 Visible = true
             };
-            new HotkeyController.HotKey(Key.V, HotkeyController.KeyModifier.Shift | HotkeyController.KeyModifier.Ctrl, OnHotKeyPressed);
+            HotkeyController.Hotkey = new HotkeyController.HotKey(Key.V, ModifierKeys.Shift | ModifierKeys.Control, OnHotKeyPressed);
             clipboardController = new ClipboardController(this);
             clipboardController.ClipboardChanged += ClipboardController_ClipboardChanged;
             this.Deactivated += ClipboardView_Deactivated;
@@ -70,9 +70,11 @@ namespace ClipboardManager.Views
                     clipboardTextblock.MouseUp += ClipboardTextBlock_MouseUp;
                     clipboardTextblock.MouseEnter += ClipboardTextBlock_MouseEnter;
                     clipboardTextblock.MouseLeave += ClipboardTextBlock_MouseLeave;
-                    
-                    var clipboardCheckbox = new CheckBox();
-                    clipboardCheckbox.Width = this.Width * 0.10;
+
+                    var clipboardCheckbox = new CheckBox()
+                    {
+                        Width = this.Width * 0.10
+                    };
                     clipboardCheckbox.Checked += ClipboardCheckbox_Checked;
                     clipboardCheckbox.Unchecked += ClipboardCheckbox_UnChecked;
                     clipboardItemsGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
@@ -136,9 +138,9 @@ namespace ClipboardManager.Views
         {
           
             var ClipboardTextBlock = (TextBlock)sender;
-            clipboardController.UnRegisterListener(); //Stop listening because we are injecting our clipboard message to the clipboard list.
+            clipboardController?.UnRegisterListener(); //Stop listening because we are injecting our clipboard message to the clipboard list.
             System.Windows.Forms.Clipboard.SetText(ClipboardTextBlock.Text.ToString());
-            clipboardController.RegisterListenter(); //Re-register the listener
+            clipboardController?.RegisterListenter(); //Re-register the listener
             this.Hide();
             clipboardController?.Paste();
         }

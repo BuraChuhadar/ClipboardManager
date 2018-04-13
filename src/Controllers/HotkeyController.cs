@@ -11,6 +11,8 @@ namespace ClipboardManager.Controllers
 {
     class HotkeyController
     {
+        public static HotKey Hotkey { get; set; }
+
         public class HotKey : IDisposable
         {
             private static Dictionary<int, HotKey> _dictHotKeyToCalBackProc;
@@ -26,11 +28,11 @@ namespace ClipboardManager.Controllers
             private bool _disposed = false;
 
             public Key Key { get; private set; }
-            public KeyModifier KeyModifiers { get; private set; }
+            public ModifierKeys KeyModifiers { get; private set; }
             public Action<HotKey> Action { get; private set; }
             public int Id { get; set; }
 
-            public HotKey(Key k, KeyModifier keyModifiers, Action<HotKey> action, bool register = true)
+            public HotKey(Key k, ModifierKeys keyModifiers, Action<HotKey> action, bool register = true)
             {
                 Key = k;
                 KeyModifiers = keyModifiers;
@@ -39,6 +41,14 @@ namespace ClipboardManager.Controllers
                 {
                     Register();
                 }
+            }
+
+            public void SetModifierKeys(Key k, ModifierKeys keyModifiers)
+            {
+                Unregister();
+                Key = k;
+                KeyModifiers = keyModifiers;
+                Register();
             }
 
             public bool Register()
@@ -128,19 +138,5 @@ namespace ClipboardManager.Controllers
                 }
             }
         }
-
-        // ******************************************************************
-        [Flags]
-        public enum KeyModifier
-        {
-            None = 0x0000,
-            Alt = 0x0001,
-            Ctrl = 0x0002,
-            NoRepeat = 0x4000,
-            Shift = 0x0004,
-            Win = 0x0008
-        }
-
-        // ******************************************************************
     }
 }
