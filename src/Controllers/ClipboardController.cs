@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ClipboardManager.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -19,6 +20,8 @@ namespace ClipboardManager.Controllers
 
         private bool _disposed = false;
         Window _windowSource = null;
+        public static IList<ClipboardData> ClipboardRecentData { get; } = new List<ClipboardData>();
+        public static IList<ClipboardData> ClipboardPinnedData { get; } = new List<ClipboardData>();
 
         internal static class NativeMethods
         {

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ClipboardManager.Views"
         mc:Ignorable="d"
-        Title="Options" Height="203.631" Width="381.349" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded">
+        Title="Options" Height="203.631" Width="381.349" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" Closing="Window_Closing">
     <Grid>
         <CheckBox x:Name="chckLoadStartup" Content="Load On Startup" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0"/>
         <Button x:Name="btnSave" Content="Save" Height="22" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="74" Click="BtnSave_Click" Margin="0,0,10,10"/>
