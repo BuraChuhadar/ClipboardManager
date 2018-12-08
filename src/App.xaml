@@ -4,6 +4,5 @@
              xmlns:myns="clr-namespace:ClipboardManager.Views" 
              Startup="Application_Startup">
     <Application.Resources>
-         
     </Application.Resources>
 </Application>

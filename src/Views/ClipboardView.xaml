@@ -5,21 +5,43 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ClipboardManager.Views"
         mc:Ignorable="d"
-        Title="Clipboard" Height="303.138" Width="210.879" WindowStyle="None" Loaded="Window_Loaded" Visibility="Hidden" WindowStartupLocation="CenterOwner" ShowInTaskbar="False" ResizeMode="NoResize">
-    <Border BorderBrush="Black" BorderThickness="1">
+        Title="Clipboard" Height="303.138" Width="210.879" WindowStyle="None" Loaded="Window_Loaded" Visibility="Visible" WindowStartupLocation="CenterOwner" ShowInTaskbar="False" ResizeMode="CanResizeWithGrip" MinWidth="210" MinHeight="300">
+    <Window.Resources>
+        <ResourceDictionary Source="/Resources/ResourceDictionary.xaml" />
+    </Window.Resources>
+    <Border BorderThickness="1">
+        <Border.BorderBrush>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="#1e1e1e" Offset="0"/>
+                <GradientStop Color="#424242" Offset="0.5"/>
+                <GradientStop Color="#FF2E75BE" Offset="1"/>
+            </LinearGradientBrush>
+        </Border.BorderBrush>
         <Grid x:Name="ClipboardPanel">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="30px" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"  />
-            </Grid.ColumnDefinitions>
-            <ScrollViewer x:Name="ScrollViewerPinned" VerticalScrollBarVisibility="Auto" Grid.Row="0" Grid.Column="1">
-                <StackPanel x:Name="ClipboardPanelPinned" Grid.Row="0" Grid.Column="1"/>
+            <StackPanel x:Name="Menu" Grid.Row="0" Grid.RowSpan="2" Grid.Column="0">
+                <Button x:Name="btnCurrentItems" ToolTip="Current Items" Style="{StaticResource MyButtonStyle}" Background="Transparent" Content="{DynamicResource ClipboardIcon}" Click="BtnCurrentItems_Click"/>
+                <Button x:Name="btnPinnedItems"  ToolTip="Pinned Items"  Style="{StaticResource MyButtonStyle}" Background="Transparent" Content="{DynamicResource PinnedIcon}" Click="BtnPinnedItems_Click" />
+                <Button x:Name="btnSettings"  ToolTip="Settings"  Style="{StaticResource MyButtonStyle}" Background="Transparent" Content="{DynamicResource SettingsIcon}" Click="BtnSettings_Click" />
+                <StackPanel.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#1e1e1e" Offset="0"/>
+                        <GradientStop Color="#424242" Offset="0.5"/>
+                        <GradientStop Color="#FF2E75BE" Offset="1"/>
+                    </LinearGradientBrush>
+                </StackPanel.Background>
+            </StackPanel>
+            <ScrollViewer x:Name="ScrollViewerPinned" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Grid.Row="0" Grid.Column="1" Visibility="Collapsed">
+                <ListBox  Visibility="Collapsed" Padding="0" Margin="0" ItemContainerStyle="{StaticResource RecentItemsListboxStyle}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch" ItemsSource="{Binding}" x:Name="ClipboardPanelPinnedItems" Grid.Row="0" Grid.Column="2" ItemTemplate="{StaticResource StackPanelPinnedItemItemTemplate}" MouseLeftButtonUp="ClipboardPanelCurrentItems_MouseLeftButtonUp" />
             </ScrollViewer>
-            <ScrollViewer x:Name="ScrollViewerUnPinned" VerticalScrollBarVisibility="Auto" Grid.Row="1" Grid.Column="1">
-                <StackPanel x:Name="ClipboardPanelUnPinned" Grid.Row="1" Grid.Column="1"/>
+            <ScrollViewer x:Name="ScrollViewerCurrentItems" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Grid.Row="0" Grid.Column="1" Visibility="Visible">
+                <ListBox Visibility="Visible" Padding="0" Margin="0" ItemContainerStyle="{StaticResource RecentItemsListboxStyle}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch" ItemsSource="{Binding}" x:Name="ClipboardPanelCurrentItems" Grid.Row="0" Grid.Column="2" ItemTemplate="{StaticResource StackPanelRecentItemItemTemplate}" MouseLeftButtonUp="ClipboardPanelCurrentItems_MouseLeftButtonUp" />
             </ScrollViewer>
         </Grid>
     </Border>

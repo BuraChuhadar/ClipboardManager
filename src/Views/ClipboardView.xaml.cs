@@ -14,6 +14,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.IO;
+using ClipboardManager.Models;
+using System.Collections.ObjectModel;
+using ClipboardManager.Utils;
 
 namespace ClipboardManager.Views
 {
@@ -22,12 +25,91 @@ namespace ClipboardManager.Views
     /// </summary>
     public partial class ClipboardView : Window
     {
-        
+
         ClipboardController clipboardController;
+        public ObservableCollection<ClipboardData> clipboardDataList = new ObservableCollection<ClipboardData>();
+
+
+        public ICommand CmdItemPinnedDelete { get; set; }
+        public ICommand CmdItemPin { get; set; }
+
+        public ICommand CmdItemUnPin { get; set; }
+        public ICommand CmdItemUnPinnedDelete { get; set; }
+
+        private bool _canBeDeActivated = true;
+
 
         public ClipboardView()
         {
             InitializeComponent();
+            ClipboardPanelCurrentItems.DataContext = clipboardDataList;
+            ClipboardPanelPinnedItems.DataContext = clipboardDataList;
+
+            this.CmdItemPinnedDelete = new RelayCommand<object>(new Action<object>(this.CmdItemPinnedDelete_Click));
+            this.CmdItemPin = new RelayCommand<object>(new Action<object>(this.CmdItemPin_Click));
+
+            this.CmdItemUnPinnedDelete = new RelayCommand<object>(new Action<object>(this.CmdItemUnPinnedDelete_Click));
+            this.CmdItemUnPin = new RelayCommand<object>(new Action<object>(this.CmdItemUnPin_Click));
+        }
+
+        protected async void CmdItemPinnedDelete_Click(object obj)
+        {
+            if(Guid.TryParse(obj?.ToString(), out Guid itemGuid))
+            {
+               
+                var itemToDelete = ClipboardController.ClipboardRecentData.Where(c => c.Id == itemGuid).FirstOrDefault();
+                if (itemToDelete != null)
+                {
+                    ClipboardController.ClipboardRecentData.Remove(itemToDelete);
+                    await RenderClipboardItems();
+                }
+            }
+        }
+
+
+        protected async void CmdItemUnPinnedDelete_Click(object obj)
+        {
+            if (Guid.TryParse(obj?.ToString(), out Guid itemGuid))
+            {
+
+                var itemToDelete = ClipboardController.ClipboardPinnedData.Where(c => c.Id == itemGuid).FirstOrDefault();
+                if (itemToDelete != null)
+                {
+                    ClipboardController.ClipboardPinnedData.Remove(itemToDelete);
+                    await RenderClipboardItems();
+                }
+            }
+        }
+
+
+        protected async void CmdItemPin_Click(object obj)
+        {
+            if (Guid.TryParse(obj?.ToString(), out Guid itemGuid))
+            {
+
+                var itemToPin = ClipboardController.ClipboardRecentData.Where(c => c.Id == itemGuid).FirstOrDefault();
+                if (itemToPin != null)
+                {
+                    ClipboardController.ClipboardRecentData.Remove(itemToPin);
+                    ClipboardController.ClipboardPinnedData.Add(itemToPin);
+                    await RenderClipboardItems();
+                }
+            }
+        }
+
+        protected async void CmdItemUnPin_Click(object obj)
+        {
+            if (Guid.TryParse(obj?.ToString(), out Guid itemGuid))
+            {
+
+                var itemToUnPin = ClipboardController.ClipboardPinnedData.Where(c => c.Id == itemGuid).FirstOrDefault();
+                if (itemToUnPin != null)
+                {
+                    ClipboardController.ClipboardPinnedData.Remove(itemToUnPin);
+                    ClipboardController.ClipboardRecentData.Add(itemToUnPin);
+                    await RenderClipboardItems();
+                }
+            }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -40,110 +122,116 @@ namespace ClipboardManager.Views
             };
             HotkeyController.Hotkey = new HotkeyController.HotKey(Key.V, ModifierKeys.Shift | ModifierKeys.Control, OnHotKeyPressed);
             clipboardController = new ClipboardController(this);
+            btnCurrentItems.Tag = true;
             clipboardController.ClipboardChanged += ClipboardController_ClipboardChanged;
             this.Deactivated += ClipboardView_Deactivated;
         }
 
         private void ClipboardView_Deactivated(object sender, EventArgs e)
         {
-            this.Hide();
+            if(_canBeDeActivated)
+            {
+                this.Hide();
+            }
         }
 
         #region ClipboardEvents
-        private void ClipboardController_ClipboardChanged(object sender, EventArgs e)
+        private async void ClipboardController_ClipboardChanged(object sender, EventArgs e)
         {
-            if(System.Windows.Forms.Clipboard.ContainsText())
+            if (System.Windows.Forms.Clipboard.ContainsText())
             {
                 var clipboardValue = System.Windows.Forms.Clipboard.GetText();
-                if(!string.IsNullOrEmpty(clipboardValue.Trim()))
+                if (!string.IsNullOrEmpty(clipboardValue.Trim()))
                 {
-                    var clipboardItemsGrid = new Grid();
-                    clipboardItemsGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(0.9, GridUnitType.Star) });
-                    clipboardItemsGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(0.1, GridUnitType.Star) });
-                    var clipboardTextblock = new TextBlock();
-                    clipboardTextblock.ToolTip = new ToolTip().Content = clipboardValue.Length > 100 ? $@"{clipboardValue.Substring(0, 100)} ..." : clipboardValue;
-                    clipboardTextblock.TextTrimming = TextTrimming.CharacterEllipsis;
-                    clipboardTextblock.TextWrapping = TextWrapping.NoWrap;
-                    clipboardTextblock.Height = 20;
-                    clipboardTextblock.Text = clipboardValue;
-                    Grid.SetColumn(clipboardTextblock, 0);
-                    clipboardTextblock.MouseUp += ClipboardTextBlock_MouseUp;
-                    clipboardTextblock.MouseEnter += ClipboardTextBlock_MouseEnter;
-                    clipboardTextblock.MouseLeave += ClipboardTextBlock_MouseLeave;
-
-                    var clipboardCheckbox = new CheckBox()
-                    {
-                        Width = this.Width * 0.10
-                    };
-                    clipboardCheckbox.Checked += ClipboardCheckbox_Checked;
-                    clipboardCheckbox.Unchecked += ClipboardCheckbox_UnChecked;
-                    clipboardItemsGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
-                    Grid.SetColumn(clipboardCheckbox, 1);
-
-                    DockPanel.SetDock(clipboardTextblock, Dock.Left);
-                    DockPanel.SetDock(clipboardCheckbox, Dock.Right);
-
-                    clipboardItemsGrid.Children.Add(clipboardTextblock);
-                    clipboardItemsGrid.Children.Add(clipboardCheckbox);
-                    this.ClipboardPanelUnPinned.Children.Add(clipboardItemsGrid);
-                    this.ScrollViewerUnPinned.ScrollToEnd();
-                }   
+                    ClipboardController.ClipboardRecentData.Add(new ClipboardText(clipboardValue));
+                    await RenderClipboardItems();
+                }
             }
         }
 
-        private void ClipboardCheckbox_Checked(object sender, RoutedEventArgs e)
+        private Task<bool> RenderClipboardItems()
         {
-            ClipboardPanel.RowDefinitions[0].Height = new GridLength(0.2, GridUnitType.Star);
-            ClipboardPanel.RowDefinitions[1].Height = new GridLength(0.8, GridUnitType.Star);
-            var currentCheckbox = (CheckBox)(sender);
-            var currentClipboardItem = (Grid)(currentCheckbox).Parent;
-            MoveClipboardItem(currentClipboardItem,ClipboardPanelUnPinned,ClipboardPanelPinned);
-        }
-
-        private void MoveClipboardItem(Grid currentClipboardItem,StackPanel fromPanel, StackPanel toPanel)
-        {
-            fromPanel.Children.Remove(currentClipboardItem);
-            toPanel.Children.Insert(toPanel.Children.Count, currentClipboardItem);
-        }
-
-        private void ClipboardCheckbox_UnChecked(object sender, RoutedEventArgs e)
-        {
-            var currentCheckbox = (CheckBox)(sender);
-            var currentClipboardItem = (Grid)(currentCheckbox).Parent;
-            MoveClipboardItem(currentClipboardItem, ClipboardPanelPinned, ClipboardPanelUnPinned);
-            if(ClipboardPanelPinned.Children.Count == 0)
+            clipboardDataList.Clear();
+            IEnumerable<ClipboardText> currentItems = null;
+            if (ScrollViewerCurrentItems.Visibility == Visibility.Visible)
             {
-                ClipboardPanel.RowDefinitions[0].Height = GridLength.Auto;
-                ClipboardPanel.RowDefinitions[1].Height = new GridLength(1, GridUnitType.Star);
+                currentItems = ClipboardController.ClipboardRecentData.Where(c => c is ClipboardText).Cast<ClipboardText>();
+            }
+            else if (ScrollViewerPinned.Visibility == Visibility.Visible)
+            {
+                currentItems = ClipboardController.ClipboardPinnedData.Where(c => c is ClipboardText).Cast<ClipboardText>();
+            }
+
+            foreach (var clipboardData in currentItems)
+            {
+                clipboardDataList.Add(clipboardData);
+            }
+            DoScrollViewAction(ScrollViewerCurrentItems.ScrollToEnd, ScrollViewerPinned.ScrollToEnd);
+
+            return Task.FromResult(true);
+
+            void DoScrollViewAction(Action ScrollViewerCurrentItemsTask, Action ScrollViewerPinnedTask)
+            {
+                if (ScrollViewerCurrentItems.Visibility == Visibility.Visible)
+                {
+                    ScrollViewerCurrentItemsTask();
+                }
+                else if (ScrollViewerPinned.Visibility == Visibility.Visible)
+                {
+                    ScrollViewerPinnedTask();
+                }
             }
         }
-        #endregion
 
-        #region LabelActions
-        private void ClipboardTextBlock_MouseLeave(object sender, MouseEventArgs e)
+        private async void ClipboardCheckbox_Checked(object sender, RoutedEventArgs e)
         {
-            var ClipboardTextBlock = (TextBlock)sender;
-            ClipboardTextBlock.Background = Brushes.Transparent;
-            ClipboardTextBlock.Foreground = Brushes.Black;
+            var currentCheckbox = (CheckBox)(sender);
+            var currentClipboardItem = (Grid)(currentCheckbox).Parent;
+            if (ScrollViewerCurrentItems.Visibility == Visibility.Visible)
+            {
+                await MoveClipboardItem(Operation.Add, (Guid)currentCheckbox.Tag);
+            }
+            else if (ScrollViewerPinned.Visibility == Visibility.Visible)
+            {
+                await MoveClipboardItem(Operation.Remove, (Guid)currentCheckbox.Tag);
+            }
         }
 
-        private void ClipboardTextBlock_MouseEnter(object sender, MouseEventArgs e)
+        enum Operation
         {
-            var ClipboardTextBlock = (TextBlock)sender;
-            ClipboardTextBlock.Background = Brushes.Blue;
-            ClipboardTextBlock.Foreground = Brushes.White;
+            Add,
+            Remove
         }
 
-        private void ClipboardTextBlock_MouseUp(object sender, MouseButtonEventArgs e)
+        private async Task<bool> MoveClipboardItem(Operation operation, Guid clipboardId)
         {
-          
-            var ClipboardTextBlock = (TextBlock)sender;
-            clipboardController?.UnRegisterListener(); //Stop listening because we are injecting our clipboard message to the clipboard list.
-            System.Windows.Forms.Clipboard.SetText(ClipboardTextBlock.Text.ToString());
-            clipboardController?.RegisterListenter(); //Re-register the listener
-            this.Hide();
-            clipboardController?.Paste();
+            ClipboardData clipboardItem = null;
+            if (ScrollViewerCurrentItems.Visibility == Visibility.Visible)
+            {
+                clipboardItem = ClipboardController.ClipboardRecentData.Where(c => c.Id == clipboardId).FirstOrDefault();
+            }
+            else if (ScrollViewerPinned.Visibility == Visibility.Visible)
+            {
+                clipboardItem = ClipboardController.ClipboardPinnedData.Where(c => c.Id == clipboardId).FirstOrDefault();
+            }
+
+            if (clipboardItem != null)
+            {
+                switch (operation)
+                {
+                    case Operation.Add:
+                        ClipboardController.ClipboardPinnedData.Add(clipboardItem);
+                        ClipboardController.ClipboardRecentData.Remove(clipboardItem);
+                        break;
+                    case Operation.Remove:
+                        ClipboardController.ClipboardRecentData.Add(clipboardItem);
+                        ClipboardController.ClipboardPinnedData.Remove(clipboardItem);
+                        break;
+                }
+            }
+            return await RenderClipboardItems();
         }
+
         #endregion
 
         private void OnHotKeyPressed(HotkeyController.HotKey obj)
@@ -159,7 +247,7 @@ namespace ClipboardManager.Views
             var transform = PresentationSource.FromVisual(this).CompositionTarget.TransformFromDevice;
             var mouse = transform.Transform(GetMousePosition());
             var resolution = System.Windows.Forms.Screen.PrimaryScreen.Bounds;
-            if (mouse.Y >= resolution.Height/2)
+            if (mouse.Y >= resolution.Height / 2)
             {
                 Top = mouse.Y - this.Height + 1;
             }
@@ -174,6 +262,72 @@ namespace ClipboardManager.Views
         {
             System.Drawing.Point point = System.Windows.Forms.Control.MousePosition;
             return new System.Windows.Point(point.X, point.Y);
+        }
+
+        private void BtnCurrentItems_Click(object sender, RoutedEventArgs e)
+        {
+            ScrollViewerPinned.Visibility = Visibility.Collapsed;
+            ClipboardPanelPinnedItems.Visibility = Visibility.Collapsed;
+
+            ScrollViewerCurrentItems.Visibility = Visibility.Visible;
+            ClipboardPanelCurrentItems.Visibility = Visibility.Visible;
+
+
+            ToggleButton(sender);
+        }
+
+        private void ToggleButton(object sender)
+        {
+            foreach (var menuComponent in Menu.Children)
+            {
+                if (menuComponent is Button)
+                {
+                    ((Button)menuComponent).Tag = false;
+                }
+            }
+            ((Button)(sender)).Tag = true;
+            RenderClipboardItems();
+        }
+
+        private void BtnPinnedItems_Click(object sender, RoutedEventArgs e)
+        {
+            ScrollViewerPinned.Visibility = Visibility.Visible;
+            ClipboardPanelPinnedItems.Visibility = Visibility.Visible;
+
+            ScrollViewerCurrentItems.Visibility = Visibility.Collapsed;
+            ClipboardPanelCurrentItems.Visibility = Visibility.Collapsed;
+
+            ToggleButton(sender);
+        }
+
+
+        private void BtnSettings_Click(object sender, RoutedEventArgs e)
+        {
+            this._canBeDeActivated = false;
+            var options = new Options();
+            if(options.ShowDialog() != null)
+            {
+                this._canBeDeActivated = true;
+            }
+        }
+        
+        private void ClipboardPanelCurrentItems_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (ItemsControl.ContainerFromElement(ClipboardPanelCurrentItems, e.OriginalSource as DependencyObject) is ListBoxItem item)
+            {
+                if (Guid.TryParse(((ClipboardManager.Models.ClipboardData)item?.DataContext)?.Id.ToString(), out Guid itemGuid))
+                {
+                    var itemToPaste = (ClipboardText)ClipboardController.ClipboardRecentData.Where(c => c.Id == itemGuid).FirstOrDefault();
+                    if (itemToPaste != null)
+                    {
+                        clipboardController?.UnRegisterListener(); //Stop listening because we are injecting our clipboard message to the clipboard list.
+                        System.Windows.Forms.Clipboard.SetText(itemToPaste.Data);
+                        clipboardController?.RegisterListenter(); //Re-register the listener
+                        this.Hide();
+                        clipboardController?.Paste();
+                    }
+                }
+            }
         }
     }
 }

@@ -73,6 +73,7 @@ namespace ClipboardManager.Views
             }
 
             HotkeyController.Hotkey.SetModifierKeys(key, keyModifiers);
+            this.DialogResult = true;
             this.Close();
         }
 
@@ -136,6 +137,11 @@ namespace ClipboardManager.Views
         private void TxtShortcutKeys_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             e.Handled = true;
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            this.DialogResult = true;
         }
     }
 }
