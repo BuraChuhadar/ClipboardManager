@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Clipboard Manager"
-#define MyAppVersion "1.0.3"
+#define MyAppVersion "1.0.4"
 #define MyAppPublisher "Bura Chuhadar"
 #define MyAppURL "https://github.com/BuraChuhadar/ClipboardManager"
 #define MyAppExeName "Clipboard Manager.exe"
