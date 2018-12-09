@@ -1,4 +1,4 @@
-# Clipboard Manager [![Build status](https://ci.appveyor.com/api/projects/status/9jh4q1tfuer2du02/branch/master?svg=true)](https://ci.appveyor.com/project/BugraC/clipboard/branch/master)
+# Clipboard Manager [![Build Status](https://dev.azure.com/burachuhadar/ClipboardManager/_apis/build/status/BuraChuhadar.ClipboardManager?branchName=master)](https://dev.azure.com/burachuhadar/ClipboardManager/_build/latest?definitionId=1?branchName=master)
 
 
 Clipboard Manager is a nice clipboard manager that is written in WPF. It uses Windows API in the background for certain operations. It supports all recent Windows platforms. Screenshot:
